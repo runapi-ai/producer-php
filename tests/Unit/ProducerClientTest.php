@@ -12,6 +12,7 @@ use RunApi\Core\Tests\Fixtures\QueueHttpClient;
 use RunApi\Producer\Models\CompletedAudioTaskResponse;
 use RunApi\Producer\ProducerClient;
 use RunApi\Producer\Resources\TextToMusic;
+use RunApi\Producer\Types;
 
 final class ProducerClientTest extends TestCase
 {
@@ -20,6 +21,20 @@ final class ProducerClientTest extends TestCase
         $client = new ProducerClient(new ClientOptions(apiKey: 'k', httpClient: new QueueHttpClient([]), maxRetries: 0));
 
         self::assertInstanceOf(TextToMusic::class, $client->textToMusic);
+    }
+
+    public function testExposesEveryProducerModelSlug(): void
+    {
+        self::assertSame([
+            'fuzz-2.0',
+            'fuzz-2.0-pro',
+            'fuzz-2.0-raw',
+            'fuzz-1.1-pro',
+            'fuzz-1.0-pro',
+            'fuzz-1.0',
+            'fuzz-1.1',
+            'fuzz-0.8',
+        ], Types::TEXT_TO_MUSIC_MODELS);
     }
 
     public function testCreatePostsCompactedBodyToCorrectPath(): void
@@ -100,14 +115,27 @@ final class ProducerClientTest extends TestCase
         $this->expectExceptionMessage('vocal_mode must be one of the allowed values');
 
         $client->textToMusic->create([
-        'model' => 'fuzz-2.0',
-        'lyrics' => '[Verse] Morning light across the room',
-        'prompt' => 'A product render',
-        'title' => 'Morning Light',
-        'vocal_mode' => 'not-valid',
+            'model' => 'fuzz-2.0',
+            'lyrics' => '[Verse] Morning light across the room',
+            'prompt' => 'A product render',
+            'title' => 'Morning Light',
+            'vocal_mode' => 'not-valid',
         ]);
     }
 
+    public function testRejectsInvalidContractModel(): void
+    {
+        $client = new ProducerClient(new ClientOptions(apiKey: 'k', httpClient: new QueueHttpClient([]), maxRetries: 0));
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('model must be one of the allowed values');
+
+        $client->textToMusic->create([
+            'model' => 'not-a-producer-model',
+            'prompt' => 'A product render',
+            'vocal_mode' => 'instrumental',
+        ]);
+    }
 
     public function testSecondaryResourceUsesItsOwnPath(): void
     {

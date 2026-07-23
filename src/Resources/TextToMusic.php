@@ -10,7 +10,6 @@ use RunApi\Core\RequestOptions;
 use RunApi\Core\Resources\TypedConfiguredResource;
 use RunApi\Producer\Models\AudioTaskResponse;
 use RunApi\Producer\Models\CompletedAudioTaskResponse;
-use RunApi\Producer\Types;
 
 /** Text to music operations for Producer. */
 readonly class TextToMusic extends TypedConfiguredResource
@@ -70,7 +69,7 @@ readonly class TextToMusic extends TypedConfiguredResource
             'producer/text-to-music',
             AudioTaskResponse::class,
             CompletedAudioTaskResponse::class,
-            Types::TEXT_TO_MUSIC_MODELS,
+            [],
             'text-to-music',
             AudioTaskResponse::class,
             CompletedAudioTaskResponse::class,
