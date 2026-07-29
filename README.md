@@ -10,8 +10,8 @@ errors in PHP.
 
 This README is the PHP package guide for the public `producer-php` split
 repository. For model details, use https://runapi.ai/models/producer; for API
-reference, use https://runapi.ai/docs#producer; for SDK docs, use
-https://runapi.ai/docs#sdk-producer.
+reference, use https://runapi.ai/docs/api/producer/text-to-music; for SDK docs, use
+https://runapi.ai/docs/resources/sdks.
 
 ## Install
 
@@ -69,8 +69,8 @@ or your secret manager; never commit API keys or callback secrets.
 ## Links
 
 - Model page: https://runapi.ai/models/producer
-- SDK docs: https://runapi.ai/docs#sdk-producer
-- Product docs: https://runapi.ai/docs#producer
+- SDK docs: https://runapi.ai/docs/resources/sdks
+- Product docs: https://runapi.ai/docs/api/producer/text-to-music
 - Pricing and rate limits: https://runapi.ai/models/producer
 - Full catalog: https://runapi.ai/models
 - GitHub repository: https://github.com/runapi-ai/producer-php
