@@ -30,8 +30,10 @@ use RunApi\Producer\ProducerClient;
 
 $client = new ProducerClient(); // reads RUNAPI_API_KEY
 
+
+
 $task = $client->textToMusic->create([
-    'model' => 'fuzz-2.0',
+    'model' => 'fuzz-0.8',
     'lyrics' => '[Verse] Morning light across the room',
     'prompt' => 'Warm acoustic pop with clear vocals',
     'title' => 'Morning Light',
@@ -41,7 +43,7 @@ $task = $client->textToMusic->create([
 $status = $client->textToMusic->get($task->id);
 
 $result = $client->textToMusic->run([
-    'model' => 'fuzz-2.0',
+    'model' => 'fuzz-0.8',
     'lyrics' => '[Verse] Morning light across the room',
     'prompt' => 'Cinematic orchestral music with a gradual build',
     'title' => 'Morning Light',
@@ -55,6 +57,7 @@ Use `create()` to submit a task and return quickly, `get()` to fetch the latest
 task state, and `run()` when a script should create and poll until completion.
 In web request handlers, prefer `create()` plus webhook or later `get()`
 polling so a worker is not held open.
+
 
 RunAPI-generated file URLs are temporary. Download and store generated files
 in your own durable storage within the retention window; do not treat returned
@@ -71,7 +74,7 @@ or your secret manager; never commit API keys or callback secrets.
 - Model page: https://runapi.ai/models/producer
 - SDK docs: https://runapi.ai/docs/resources/sdks
 - Product docs: https://runapi.ai/docs/api/producer/text-to-music
-- Pricing and rate limits: https://runapi.ai/models/producer
+- Pricing and rate limits: https://runapi.ai/models/producer/fuzz-2.0
 - Full catalog: https://runapi.ai/models
 - GitHub repository: https://github.com/runapi-ai/producer-php
 - Multi-language SDK repository: https://github.com/runapi-ai/producer-sdk

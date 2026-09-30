@@ -66,10 +66,8 @@ readonly class TextToMusic extends TypedConfiguredResource
         return new self(
             $http,
             '/api/v1/producer/text_to_music',
-            'producer/text-to-music',
             AudioTaskResponse::class,
             CompletedAudioTaskResponse::class,
-            [],
             'text-to-music',
             AudioTaskResponse::class,
             CompletedAudioTaskResponse::class,

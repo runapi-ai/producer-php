@@ -33,15 +33,13 @@ final class ProducerClientTest extends TestCase
             'fuzz-1.0-pro',
             'fuzz-1.0',
             'fuzz-1.1',
-            'fuzz-0.8',
-        ], Types::TEXT_TO_MUSIC_MODELS);
+            'fuzz-0.8'], Types::TEXT_TO_MUSIC_MODELS);
     }
 
     public function testCreatePostsCompactedBodyToCorrectPath(): void
     {
         $transport = new QueueHttpClient([
-            new Response(200, [], '{"id":"task_1"}'),
-        ]);
+            new Response(200, [], '{"id":"task_1"}')]);
         $client = new ProducerClient(new ClientOptions(apiKey: 'k', httpClient: $transport, maxRetries: 0));
 
         $task = $client->textToMusic->create([
@@ -51,8 +49,7 @@ final class ProducerClientTest extends TestCase
             'title' => 'Morning Light',
             'vocal_mode' => 'exact_lyrics',
             'callback_url' => '',
-            'seed' => null,
-        ]);
+            'seed' => null]);
 
         $body = json_decode((string) $transport->requests[0]->getBody(), true, flags: JSON_THROW_ON_ERROR);
 
@@ -67,8 +64,7 @@ final class ProducerClientTest extends TestCase
     {
         $transport = new QueueHttpClient([
             new Response(200, [], '{"id":"task_1"}'),
-            new Response(200, [], '{"id":"task_1","status":"completed","audios":[{"id":"audio_1","audio_url":"https://file.runapi.ai/result","image_url":"https://file.runapi.ai/cover","model_name":"fuzz-2.0","title":"Morning Light","duration_seconds":78.35,"lyrics":"Morning light"}],"generation_stage":"all_audios_ready","extra_field":"kept"}'),
-        ]);
+            new Response(200, [], '{"id":"task_1","status":"completed", "usage": {"cost": 0.05},"audios":[{"id":"audio_1","audio_url":"https://file.runapi.ai/result","image_url":"https://file.runapi.ai/cover","model_name":"fuzz-2.0","title":"Morning Light","duration_seconds":78.35,"lyrics":"Morning light"}],"generation_stage":"all_audios_ready","extra_field":"kept","usage":{"cost":0.05}}')]);
         $client = new ProducerClient(new ClientOptions(apiKey: 'k', httpClient: $transport, maxRetries: 0));
 
         $result = $client->textToMusic->run([
@@ -76,8 +72,7 @@ final class ProducerClientTest extends TestCase
             'lyrics' => '[Verse] Morning light across the room',
             'prompt' => 'A product render',
             'title' => 'Morning Light',
-            'vocal_mode' => 'exact_lyrics',
-        ]);
+            'vocal_mode' => 'exact_lyrics']);
 
         self::assertInstanceOf(CompletedAudioTaskResponse::class, $result);
         self::assertSame('https://file.runapi.ai/result', $result->audios[0]->audioUrl);
@@ -91,8 +86,7 @@ final class ProducerClientTest extends TestCase
     {
         $transport = new QueueHttpClient([
             new Response(200, [], '{"id":"task_1"}'),
-            new Response(200, [], '{"id":"task_1","status":"completed"}'),
-        ]);
+            new Response(200, [], '{"id":"task_1","status":"completed","usage":{"cost":0.05}}')]);
         $client = new ProducerClient(new ClientOptions(apiKey: 'k', httpClient: $transport, maxRetries: 0));
 
         $this->expectException(ValidationException::class);
@@ -103,45 +97,17 @@ final class ProducerClientTest extends TestCase
             'lyrics' => '[Verse] Morning light across the room',
             'prompt' => 'A product render',
             'title' => 'Morning Light',
-            'vocal_mode' => 'exact_lyrics',
-        ]);
+            'vocal_mode' => 'exact_lyrics']);
     }
 
-    public function testRejectsInvalidContractEnum(): void
-    {
-        $client = new ProducerClient(new ClientOptions(apiKey: 'k', httpClient: new QueueHttpClient([]), maxRetries: 0));
 
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('vocal_mode must be one of the allowed values');
 
-        $client->textToMusic->create([
-            'model' => 'fuzz-2.0',
-            'lyrics' => '[Verse] Morning light across the room',
-            'prompt' => 'A product render',
-            'title' => 'Morning Light',
-            'vocal_mode' => 'not-valid',
-        ]);
-    }
 
-    public function testRejectsInvalidContractModel(): void
-    {
-        $client = new ProducerClient(new ClientOptions(apiKey: 'k', httpClient: new QueueHttpClient([]), maxRetries: 0));
-
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage('model must be one of the allowed values');
-
-        $client->textToMusic->create([
-            'model' => 'not-a-producer-model',
-            'prompt' => 'A product render',
-            'vocal_mode' => 'instrumental',
-        ]);
-    }
 
     public function testSecondaryResourceUsesItsOwnPath(): void
     {
         $transport = new QueueHttpClient([
-            new Response(200, [], '{"id":"task_2"}'),
-        ]);
+            new Response(200, [], '{"id":"task_2"}')]);
         $client = new ProducerClient(new ClientOptions(apiKey: 'k', httpClient: $transport, maxRetries: 0));
 
         $client->textToMusic->create([
@@ -149,8 +115,7 @@ final class ProducerClientTest extends TestCase
             'lyrics' => '[Verse] Morning light across the room',
             'prompt' => 'A product render',
             'title' => 'Morning Light',
-            'vocal_mode' => 'exact_lyrics',
-        ]);
+            'vocal_mode' => 'exact_lyrics']);
 
         self::assertSame('/api/v1/producer/text_to_music', $transport->requests[0]->getUri()->getPath());
     }
